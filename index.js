@@ -81,11 +81,7 @@ module.exports = function dataType (options) {
         prop = createProperty(key, row[key])
       }
 
-      if (!props(prop.key)) {
-        props[prop.key] = prop
-      }
-
-      data[prop.key] = row[key]
+      data[prop.name] = row[key]
     })
     return data
   }
@@ -101,6 +97,28 @@ module.exports = function dataType (options) {
 
   function getType (value) {
     return [type(value), 'null']
+  }
+
+  function toGeoJSON (data, properties, options) {
+    if (data.data && data.properties) {
+      options = properties
+      properties = data.properties
+      data = data.data
+    }
+    options = options || {}
+    var features = []
+    data.forEach(function (item, i) {
+      features[i] = {}
+      features[i].type = 'Feature'
+      features[i].id = item.key
+      features[i].geometry = item.geometry
+      if (!options.convertToNames) {
+        features[i].properties = convertToNames(properties, item.value)
+      } else {
+        features[i].properties = item.value
+      }
+    })
+    return features
   }
 
   function format (data, options) {
@@ -161,6 +179,7 @@ module.exports = function dataType (options) {
     convertToNames: convertToNames,
     convertToKeys: convertToKeys,
     convert: convert,
-    getType: getType
+    getType: getType,
+    toGeoJSON: toGeoJSON
   }
 }

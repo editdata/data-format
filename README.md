@@ -49,6 +49,7 @@ Accepts array of objects. Objects might be plain tabular data or geojson feature
 
 ### `dataFormat.getType(value)`
 
+### `dataFormat.toGeoJSON(data, properties[, options])`
 
 ## License
 [MIT](LICENSE.md)
