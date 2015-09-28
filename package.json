@@ -1,0 +1,29 @@
+{
+  "name": "data-format",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "cuid": "^1.3.8",
+    "extend": "^3.0.0",
+    "is-geojson": "^1.0.1",
+    "is-my-json-valid": "^2.12.2",
+    "type-of": "^2.0.1"
+  },
+  "devDependencies": {
+    "tape": "^4.2.0"
+  },
+  "scripts": {
+    "test": "node tests/test.js | tap-spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/editdata/data-format.git"
+  },
+  "author": "sethvincent",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/editdata/data-format/issues"
+  },
+  "homepage": "https://github.com/editdata/data-format#readme"
+}
