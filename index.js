@@ -113,9 +113,9 @@ module.exports = function dataType (options) {
       features[i].id = item.key
       features[i].geometry = item.geometry
       if (!options.convertToNames) {
-        features[i].properties = convertToNames(properties, item.value)
-      } else {
         features[i].properties = item.value
+      } else {
+        features[i].properties = convertToNames(properties, item.value)
       }
     })
     return features
