@@ -136,7 +136,7 @@ module.exports = function dataType (options) {
         var formatted = {
           key: null,
           value: {},
-          geometry: {}
+          geometry: { type: 'Point', 'coordinates': [] }
         }
 
         if (isgeojson(item) && item.id && item.properties && item.geometry) {
@@ -147,7 +147,6 @@ module.exports = function dataType (options) {
           formatted.key = item[options.key] || item.id || 'row-' + cuid()
           formatted.value = item[options.value] || item.properties || item
           if (options.coordinateKeys) {
-            formatted.geometry = { type: 'Point', 'coordinates': [] }
             if (options.coordinateKeys.array) {
               formatted.geometry.coordinates = item[options.coordinateKeys.array]
             } else if (options.coordinateKeys.latitude && options.coordinateKeys.longitude) {
