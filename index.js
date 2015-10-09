@@ -154,6 +154,14 @@ module.exports = function dataType (options) {
               formatted.geometry.coordinates[0] = item[options.coordinateKeys.longitude]
               formatted.geometry.coordinates[1] = item[options.coordinateKeys.latitude]
             }
+          } else {
+            Object.keys(formatted.value).forEach(function (key) {
+              if (key === 'lon' || key === 'long' || key === 'longitude') {
+                formatted.geometry.coordinates[0] = formatted.value[key]
+              } else if (key === 'lat' || key === 'latitude') {
+                formatted.geometry.coordinates[1] = formatted.value[key]
+              }
+            })
           }
         } else {
           return new Error('data format is invalid. an array of objects is required')
