@@ -23,7 +23,7 @@ module.exports = function dataType (options) {
     return {
       key: keyFormat + cuid(),
       name: key,
-      type: getType(value),
+      type: initType(value),
       default: null
     }
   }
@@ -95,8 +95,18 @@ module.exports = function dataType (options) {
     }
   }
 
-  function getType (value) {
+  function initType (value) {
     return [type(value), 'null']
+  }
+
+  function getType (props, key) {
+    return props[key].type[0]
+  }
+
+  function isType (prop, checkType) {
+    prop.type.some(function (type) {
+      return type === checkType
+    })
   }
 
   function toGeoJSON (data, properties, options) {
@@ -187,6 +197,7 @@ module.exports = function dataType (options) {
     convertToKeys: convertToKeys,
     convert: convert,
     getType: getType,
+    isType: isType,
     toGeoJSON: toGeoJSON
   }
 }
