@@ -2,6 +2,8 @@
 
 Format data for use in [data-editor](https://github.com/editdata/data-editor) and other [data-ui](https://github.com/editdata/data-ui) tools.
 
+[![npm](https://img.shields.io/npm/v/data-format.svg)](http://npmjs.com/data-format)
+
 ## Install
 
 ```
