@@ -186,18 +186,17 @@ module.exports = function dataType (options) {
     return results
   }
 
-  return {
-    format: format,
-    findProperty: findProperty,
-    createProperty: createProperty,
-    updateProperty: updateProperty,
-    removeProperty: removeProperty,
-    validateProperty: validateProperty,
-    convertToNames: convertToNames,
-    convertToKeys: convertToKeys,
-    convert: convert,
-    getType: getType,
-    isType: isType,
-    toGeoJSON: toGeoJSON
-  }
+  format.format = format
+  format.findProperty = findProperty
+  format.createProperty = createProperty
+  format.updateProperty = updateProperty
+  format.removeProperty = removeProperty
+  format.validateProperty = validateProperty
+  format.convertToNames = convertToNames
+  format.convertToKeys = convertToKeys
+  format.convert = convert
+  format.getType = getType
+  format.isType = isType
+  format.toGeoJSON = toGeoJSON
+  return format
 }
