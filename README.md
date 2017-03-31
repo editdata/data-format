@@ -13,24 +13,21 @@ npm i --save data-format
 ## Usage
 
 ```
-var dataFormat = require('data-format')()
-var formatted = dataFormat.format(arrayOfObjects)
+var dataFormat = require('data-format')
+var formatted = dataFormat(arrayOfObjects)
 ```
 
 ## API
 
-### `var dataFormat = DataFormat([options])`
+### `var dataFormat = require('data-format')`
 
-#### `options`
-- `keyFormat` – `string`, default: `property-`
-
-### `dataFormat.format([options])`
+### `dataFormat(data, [options])`
 
 Accepts array of objects. Objects might be plain tabular data or geojson features.
 
 #### `options`
 - `coordinateKeys` - `object`
-  - if coordinates is stored as array: `{ array: 'key-of-coordinates-array' }`
+  - if coordinates are stored as array: `{ array: 'key-of-coordinates-array' }`
   - if coordinates are stored as lat/long: `{ latitude: 'latitude-key', longitude: 'longitude-key' }`
 
 ### `dataFormat.findProperty(properties, id)`
