@@ -1,5 +1,5 @@
 var test = require('tape')
-var dataFormat = require('../index')()
+var dataFormat = require('../index')
 
 test('format an array of objects', function (t) {
   var data = require('./fixture.json')
