@@ -24,6 +24,22 @@ function createProperty (key, value, keyPrefix) {
   }
 }
 
+function createProperties (obj, keyPrefix) {
+  var props = {}
+  var keys = Object.keys(obj)
+  var l = keys.length
+  var i = 0
+
+  for (i; i < l; i++) {
+    var key = keys[i]
+    var value = obj[key]
+    var prop = createProperties(key, value, keyPrefix)
+    props[prop.key] = prop
+  }
+
+  return props
+}
+
 function updateProperty (props, id, options) {
   var prop = findProperty(props, id)
   prop = extend(prop, options)
@@ -32,7 +48,7 @@ function updateProperty (props, id, options) {
 }
 
 function removeProperty (props, id) {
-  var prop = findProperty(id)
+  var prop = findProperty(props, id)
   delete props[prop.key]
 }
 
@@ -111,8 +127,10 @@ function toGeoJSON (data, properties, options) {
     properties = data.properties
     data = data.data
   }
+
   options = options || {}
   var features = []
+
   data.forEach(function (item, i) {
     features[i] = {}
     features[i].type = 'Feature'
@@ -124,10 +142,15 @@ function toGeoJSON (data, properties, options) {
       features[i].properties = convertToNames(properties, item.value)
     }
   })
+
   return features
 }
 
 function format (data, options) {
+  if (type(data) !== 'array') {
+    return new Error('data format is invalid. an array of objects is required')
+  }
+
   options = options || {}
   options.key = options.key || 'key'
   options.value = options.value || 'value'
@@ -137,53 +160,64 @@ function format (data, options) {
     data: []
   }
 
-  if (type(data) === 'array') {
-    data.forEach(function (item) {
-      var formatted = {
-        key: null,
-        value: {},
-        geometry: { type: 'Point', 'coordinates': [] }
-      }
+  var l = data.length
+  var i = 0
 
-      if (isgeojson(item) && item.id && item.properties && item.geometry) {
-        formatted.key = item.id
-        formatted.value = item.properties
-        formatted.geometry = item.geometry
-      } else if (type(item) === 'object') {
-        formatted.key = item[options.key] || item.id || 'row-' + cuid()
-        formatted.value = item[options.value] || item.properties || item
-        if (options.coordinateKeys) {
-          if (options.coordinateKeys.array) {
-            formatted.geometry.coordinates = item[options.coordinateKeys.array]
-          } else if (options.coordinateKeys.latitude && options.coordinateKeys.longitude) {
-            formatted.geometry.coordinates[0] = item[options.coordinateKeys.longitude]
-            formatted.geometry.coordinates[1] = item[options.coordinateKeys.latitude]
-          }
-        } else {
-          Object.keys(formatted.value).forEach(function (key) {
-            if (key === 'lon' || key === 'long' || key === 'longitude') {
-              formatted.geometry.coordinates[0] = formatted.value[key]
-            } else if (key === 'lat' || key === 'latitude') {
-              formatted.geometry.coordinates[1] = formatted.value[key]
-            }
-          })
-        }
-      } else {
-        return new Error('data format is invalid. an array of objects is required')
-      }
-
-      formatted.value = convert(results.properties, formatted.value)
-      results.data.push(formatted)
-    })
-  } else {
-    return new Error('data format is invalid. an array of objects is required')
+  for (i; i < l; i++) {
+    var item = data[i]
+    formatRow(item, results, options)
   }
 
   return results
 }
 
+function formatRow (item, results, options) {
+  results = results || {}
+  results.data = results.data || []
+  results.properties = results.properties || {}
+
+  var formatted = {
+    key: null,
+    value: {},
+    geometry: {}
+  }
+
+  if (isgeojson(item) && item.id && item.properties && item.geometry) {
+    formatted.key = item.id
+    formatted.value = item.properties
+    formatted.geometry = item.geometry
+  } else if (type(item) === 'object') {
+    formatted.key = item[options.key] || item.id || 'row-' + cuid()
+    formatted.value = item[options.value] || item.properties || item
+
+    if (options.coordinateKeys) {
+      formatted.geometry = { type: 'Point', 'coordinates': [] }
+
+      if (options.coordinateKeys.array) {
+        formatted.geometry.coordinates = item[options.coordinateKeys.array]
+      } else if (options.coordinateKeys.latitude && options.coordinateKeys.longitude) {
+        formatted.geometry.coordinates[0] = item[options.coordinateKeys.longitude]
+        formatted.geometry.coordinates[1] = item[options.coordinateKeys.latitude]
+      }
+    } else {
+      Object.keys(formatted.value).forEach(function (key) {
+        if (key === 'lon' || key === 'long' || key === 'longitude') {
+          formatted.geometry.coordinates[0] = formatted.value[key]
+        } else if (key === 'lat' || key === 'latitude') {
+          formatted.geometry.coordinates[1] = formatted.value[key]
+        }
+      })
+    }
+  }
+
+  formatted.value = convert(results.properties, formatted.value)
+  results.data.push(formatted)
+  return results
+}
+
 module.exports = format
 module.exports.format = format
+module.exports.formatRow = formatRow
 module.exports.findProperty = findProperty
 module.exports.createProperty = createProperty
 module.exports.updateProperty = updateProperty
